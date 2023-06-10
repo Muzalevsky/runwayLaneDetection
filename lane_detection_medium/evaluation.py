@@ -1,5 +1,5 @@
 import logging
-import os
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -20,7 +20,7 @@ class DetectionEvaluator:
         self._logger = logging.getLogger(self.__class__.__name__)
 
         self._model = model
-        self._dpath = dpath
+        self._dpath = Path(dpath)
         self._verbose = verbose
         self._batch_size = batch_size
 
@@ -46,7 +46,7 @@ class DetectionEvaluator:
         b_images, b_gt_dets = [], []
         for _row_ind, row in batch_df.iterrows():
             # --- Image Preprocessing --- #
-            img_fpath = os.path.join(self._dpath, row["fpath"])
+            img_fpath = self._dpath / row["fpath"]
             b_image = read_image(img_fpath)
             b_images.append(b_image)
 
