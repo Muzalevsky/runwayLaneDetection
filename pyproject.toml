@@ -32,6 +32,8 @@ python = "~3.9.0"
 typer = {extras = ["all"], version = "^0.3.2"}
 rich = "^10.7.0"
 python-dotenv = "^0.21.1"
+checksumdir = "^1.2.0"
+pandas = "^2.0.2"
 
 [tool.poetry.group.dev.dependencies]
 black = {version = "^21.7", allow-prereleases = true}
