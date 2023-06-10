@@ -3,11 +3,12 @@ import logging
 import torch
 
 from .path import YOLO_DPATH
+from .types.base_types import Dict
 from .types.detection_types import ImageDetections
 from .types.image_types import ImageRGB
 
 
-class YoloDetectionInference:
+class DetectionInference:
     """Class Inference implementation for trained YOLOv5 model."""
 
     model_name = YOLO_DPATH
@@ -28,8 +29,8 @@ class YoloDetectionInference:
         self._img_size = img_size
 
     @property
-    def names_map(self) -> dict:
-        return self._model.names
+    def names_map(self) -> Dict:
+        return Dict(self._model.names)
 
     @property
     def conf_threshold(self) -> float:
@@ -53,7 +54,7 @@ class YoloDetectionInference:
             device = "cuda:0" if torch.cuda.is_available() else "cpu"
 
         model = torch.hub.load(
-            YoloDetectionInference.model_name,
+            DetectionInference.model_name,
             "custom",
             path=fpath,
             force_reload=False,
