@@ -1,5 +1,3 @@
-from typing import Union
-
 from enum import Enum, auto
 
 import numpy as np
@@ -18,7 +16,7 @@ class BoxFormat(Enum):
 class Bbox:
     def __init__(
         self,
-        coords: Union[list[float], tuple[float], np.ndarray],
+        coords: list[float] | tuple[float] | np.ndarray,
         dformat: BoxFormat = BoxFormat.xywh,
     ):
         self.coords = np.array(coords, dtype=np.float32)
@@ -59,29 +57,18 @@ class Bbox:
         return points
 
     @classmethod
-    def from_xyxy_list(cls, coords):
+    def from_xyxy(cls, coords):
         return cls(coords=coords)
 
     @classmethod
-    def from_xywh_list(cls, coords):
+    def from_xywh(cls, coords):
         return cls(coords=coords)
 
-    @classmethod
-    def from_xywh(cls, x, y, w, h):
-        return cls(coords=[x, y, w, h])
-
-    @classmethod
-    def from_list(
-        cls,
-        coords: tuple[float, float, float, float],
-        dformat: BoxFormat = BoxFormat.xywh,
-    ):
-        return cls(coords, dformat=dformat)
-
-    def get_roi(self, img: Image):
+    def get_roi(self, img: Image) -> Image:
         bbox_np = self._as_dformat(BoxFormat.xywh)
         x, y, w, h = bbox_np.astype(int)
-        return img[y : y + h, x : x + w]  # noqa: E203
+        roi_img = img[y : y + h, x : x + w]  # noqa: E203
+        return roi_img
 
     def __getitem__(self, idx: int) -> float:
         return self.coords[idx]
