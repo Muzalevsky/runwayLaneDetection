@@ -37,6 +37,7 @@ pandas = "^2.0.2"
 opencv-python-headless = "^4.7.0.72"
 numpy = "^1.24.3"
 shapely = "^2.0.1"
+torch = "^2.0.1"
 
 [tool.poetry.group.dev.dependencies]
 black = {version = "^21.7", allow-prereleases = true}
@@ -46,6 +47,7 @@ pre-commit = "^2.14.0"
 
 nbdime = "^3.1.0"
 envyaml = "^1.9.210927"
+ipykernel = "^6.23.1"
 
 
 [tool.black]

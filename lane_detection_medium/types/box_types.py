@@ -67,8 +67,7 @@ class Bbox:
     def get_roi(self, img: Image) -> Image:
         bbox_np = self._as_dformat(BoxFormat.xywh)
         x, y, w, h = bbox_np.astype(int)
-        roi_img = img[y : y + h, x : x + w]  # noqa: E203
-        return roi_img
+        return img[y : y + h, x : x + w]  # noqa: E203
 
     def __getitem__(self, idx: int) -> float:
         return self.coords[idx]
@@ -135,9 +134,6 @@ class BboxList:
     ):
         self.data = data.astype(dtype)
         self._dformat = dformat
-
-    def is_empty(self) -> bool:
-        return self.data.size() == 0
 
     @property
     def size(self):

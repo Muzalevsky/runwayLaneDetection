@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
-PACKAGE_ROOT = os.path.abspath(os.path.dirname(__file__))
-YOLO_DPATH = os.path.join(PACKAGE_ROOT, "yolov5-7.0")
+PACKAGE_ROOT = Path(__file__).parent
+YOLO_DPATH = PACKAGE_ROOT / "yolov5-7.0"
