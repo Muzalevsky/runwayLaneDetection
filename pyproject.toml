@@ -36,6 +36,7 @@ checksumdir = "^1.2.0"
 pandas = "^2.0.2"
 opencv-python-headless = "^4.7.0.72"
 numpy = "^1.24.3"
+shapely = "^2.0.1"
 
 [tool.poetry.group.dev.dependencies]
 black = {version = "^21.7", allow-prereleases = true}
