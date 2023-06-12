@@ -9,13 +9,13 @@ import pandas as pd
 def dict_hash(cfg: dict) -> str:
     cfg_str = json.dumps(cfg)
 
-    hash_str = hashlib.md5(cfg_str.encode("utf-8")).hexdigest()
+    hash_str = hashlib.sha224(cfg_str.encode("utf-8")).hexdigest()
 
     return hash_str
 
 
 def file_hash(fpath: str) -> str:
-    hash_str = hashlib.md5(pathlib.Path(fpath).read_bytes()).hexdigest()
+    hash_str = hashlib.sha224(pathlib.Path(fpath).read_bytes()).hexdigest()
 
     return hash_str
 
@@ -28,6 +28,6 @@ def dir_hash(dpath: str) -> str:
 
 def dataframe_hash(df: pd.DataFrame) -> str:
     rec = df.to_records(index=False).tostring()
-    hash_str = hashlib.md5(rec).hexdigest()
+    hash_str = hashlib.sha224(rec).hexdigest()
 
     return hash_str
