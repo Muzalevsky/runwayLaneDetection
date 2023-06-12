@@ -1,6 +1,8 @@
+from typing import Union
+
 import hashlib
 import json
-import pathlib
+from pathlib import Path
 
 import checksumdir
 import pandas as pd
@@ -14,8 +16,11 @@ def dict_hash(cfg: dict) -> str:
     return hash_str
 
 
-def file_hash(fpath: str) -> str:
-    hash_str = hashlib.sha224(pathlib.Path(fpath).read_bytes()).hexdigest()
+def file_hash(fpath: Union[str, Path]) -> str:
+    if isinstance(fpath, str):
+        fpath = Path(fpath)
+
+    hash_str = hashlib.sha224(fpath.read_bytes()).hexdigest()
 
     return hash_str
 
@@ -27,7 +32,4 @@ def dir_hash(dpath: str) -> str:
 
 
 def dataframe_hash(df: pd.DataFrame) -> str:
-    rec = df.to_records(index=False).tostring()
-    hash_str = hashlib.sha224(rec).hexdigest()
-
-    return hash_str
+    return str(pd.util.hash_pandas_object(df).sum())
