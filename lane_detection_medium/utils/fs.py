@@ -13,18 +13,16 @@ def get_date_string() -> str:
 
 
 # --- Image related --- #
-# TODO: remove gray_scale flag from functions?
 
 
-def read_image(fpath: str, gray_scale: bool = False, bgr_to_rgb: bool = True) -> Image:
+def read_image(fpath: str, gray_scale: bool = False) -> Image:
     """Read image from filesystem."""
 
     if gray_scale:
         return cv2.imread(fpath, cv2.IMREAD_GRAYSCALE)
 
     img = cv2.imread(fpath, cv2.IMREAD_COLOR)
-    if bgr_to_rgb:
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     return img
 

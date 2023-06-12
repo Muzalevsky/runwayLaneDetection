@@ -1,3 +1,6 @@
+from typing import Union
+
+from dataclasses import dataclass
 from enum import Enum, auto
 
 import numpy as np
@@ -13,10 +16,11 @@ class BoxFormat(Enum):
     xyxy = auto()
 
 
+@dataclass
 class Bbox:
     def __init__(
         self,
-        coords: list[float] | tuple[float] | np.ndarray,
+        coords: Union[list[float], tuple[float], np.ndarray],
         dformat: BoxFormat = BoxFormat.xywh,
     ):
         self.coords = np.array(coords, dtype=np.float32)

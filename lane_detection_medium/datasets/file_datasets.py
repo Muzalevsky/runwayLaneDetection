@@ -1,3 +1,5 @@
+from typing import Callable
+
 import logging
 import os
 from enum import Enum, auto
@@ -5,6 +7,8 @@ from enum import Enum, auto
 import pandas as pd
 
 from ..utils.hash import dir_hash
+
+read_function = Callable[[str], pd.DataFrame]
 
 
 class DatasetMode(Enum):
@@ -48,9 +52,9 @@ class FileDataset:
 
     def _read_file(self, fpath: str) -> pd.DataFrame:
         if fpath.lower().endswith(".csv"):
-            read_func = pd.read_csv
+            read_func: read_function = pd.read_csv
         elif fpath.lower().endswith(".xlsx"):
-            read_func = pd.read_excel
+            read_func: read_function = pd.read_excel
 
         return read_func(fpath, index_col=0)
 
