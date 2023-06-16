@@ -68,3 +68,8 @@ repos:
     rev: 0.5.0
     hooks:
       - id: nbstripout
+
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
+    rev: v1.2.2
+    hooks:
+      - id: python-safety-dependencies-check
