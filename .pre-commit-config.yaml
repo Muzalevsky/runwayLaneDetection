@@ -23,6 +23,9 @@ repos:
       - id: check-docstring-first
       - id: detect-private-key
       - id: check-case-conflict
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: pretty-format-json
 
   - repo: local
     hooks:
