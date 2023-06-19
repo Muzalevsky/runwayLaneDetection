@@ -1746,6 +1746,21 @@ pyyaml = ">=5.1"
 virtualenv = ">=20.10.0"
 
 [[package]]
+name = "project-paths"
+version = "1.1.1"
+description = "Access file paths from pyproject.toml"
+category = "main"
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "project-paths-1.1.1.tar.gz", hash = "sha256:b040f701fcdd550e7fa6ea85fa8a82ae047da755b4d639a1b278da7c959fdada"},
+    {file = "project_paths-1.1.1-py3-none-any.whl", hash = "sha256:5e93b759772f47d79f86ad5482c55ef1cc9566de6a4108aab939b6e0e602cf2d"},
+]
+
+[package.dependencies]
+toml = ">=0.10.2,<0.11.0"
+
+[[package]]
 name = "prometheus-client"
 version = "0.17.0"
 description = "Python client for the Prometheus monitoring system."
@@ -2503,6 +2518,18 @@ doc = ["sphinx", "sphinx_rtd_theme"]
 test = ["flake8", "isort", "pytest"]
 
 [[package]]
+name = "toml"
+version = "0.10.2"
+description = "Python Library for Tom's Obvious, Minimal Language"
+category = "main"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
+files = [
+    {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
+    {file = "toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"},
+]
+
+[[package]]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
@@ -2788,4 +2815,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.9.0"
-content-hash = "5a330178ef51a94a67bddbc87b99679f2ebba3517d28909e2b7f1f10ff8134ae"
+content-hash = "4cda34e886beb89dce18ab238cc93d87ec773392502868f2b9e778d6404811a3"
