@@ -112,3 +112,4 @@ addopts = [
 readme = "README.md"
 data = "data"
 configs = "configs"
+yolo_dpath = "lane_detection_medium/yolov5-7.0"

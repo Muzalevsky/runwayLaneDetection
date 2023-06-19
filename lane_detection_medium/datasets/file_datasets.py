@@ -12,9 +12,9 @@ read_function = Callable[[str], pd.DataFrame]
 
 
 class DatasetMode(Enum):
-    TRAIN = auto()
-    VALID = auto()
-    TEST = auto()
+    train = auto()
+    valid = auto()
+    test = auto()
 
 
 class FileDataset:
@@ -59,11 +59,11 @@ class FileDataset:
         return read_func(fpath, index_col=0)
 
     def get_data(self, mode: DatasetMode) -> pd.DataFrame:
-        if mode.value == DatasetMode.TRAIN.value:
+        if mode.value == DatasetMode.train.value:
             fpath = self._train_fpath
-        elif mode.value == DatasetMode.VALID.value:
+        elif mode.value == DatasetMode.valid.value:
             fpath = self._valid_fpath
-        elif mode.value == DatasetMode.TEST.value:
+        elif mode.value == DatasetMode.test.value:
             fpath = self._test_fpath
         else:
             raise ValueError(f"Invalid mode value: {mode}")

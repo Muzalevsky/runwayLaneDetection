@@ -98,12 +98,22 @@ class Bbox:
 class YoloBbox(Bbox):
     @classmethod
     def from_bbox(cls, bbox: Bbox, height: int, width: int):
-        bbox_np = bbox.xywh_numpy.copy()
+        bbox_np = bbox.xywh.copy()
         bbox_np[:2] += bbox_np[2:] / 2  # xy top-left corner to center
         bbox_np[[0, 2]] /= width  # normalize x
         bbox_np[[1, 3]] /= height  # normalize y
 
         return cls(bbox_np, dformat=BoxFormat.xywh)
+
+    @classmethod
+    def from_yolo(cls, coord: np.ndarray, height: int, width: int):
+        bbox_np = coord.copy()
+
+        bbox_np[[1, 3]] *= height  # reverse normalize y
+        bbox_np[[0, 2]] *= width  # reverse normalize x
+        bbox_np[:2] -= bbox_np[2:] / 2  # xy top-left corner to center
+
+        return cls(bbox_np.reshape(-1), dformat=BoxFormat.xywh)
 
 
 @dataclass
