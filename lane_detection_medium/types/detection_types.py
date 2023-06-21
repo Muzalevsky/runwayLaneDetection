@@ -1,61 +1,46 @@
 from typing import Optional, Union
 
+from dataclasses import dataclass
+
 import numpy as np
 
 from .box_types import Bbox, BboxList, BoxFormat
 
 
+@dataclass(kw_only=True)
 class Detection:
     """Single Detection Result Class Implementation."""
 
-    def __init__(
-        self, label_id: int, conf: float, coord: np.ndarray, label_name: Optional[str] = None
-    ):
-        self._label_name = label_name
-        self._label_id = label_id
-        self._conf = conf
-        self._bbox = Bbox(coord, dformat=BoxFormat.xyxy)
+    label_name: Optional[str] = None
+    label_id: int
+    conf: float
+    bbox: np.ndarray[float, np.dtype[np.float32]]
 
-    @property
-    def bbox(self) -> Bbox:
-        return self._bbox
-
-    @property
-    def conf(self) -> float:
-        return self._conf
-
-    @property
-    def label_name(self) -> Optional[str]:
-        return self._label_name
+    def __post_init__(self):
+        # TODO: choose dformat, maybe make it as a method?
+        self.bbox = Bbox(self.bbox, dformat=BoxFormat.xyxy)
 
 
+@dataclass
 class ImageDetections:
     """Single Image Detections Class Implementation."""
 
-    def __init__(self, result: np.ndarray, dformat: BoxFormat = BoxFormat.xyxy):
-        self._raw_result = result
-
-        self._bboxes = BboxList(self._raw_result[:, :4], dformat=dformat)
+    results: np.ndarray[float, np.dtype[np.float32]]
 
     @property
-    def raw_detection(self) -> np.ndarray:
-        return self._raw_result
+    def confs(self) -> np.ndarray[float, np.dtype[np.float32]]:
+        return self.results[:, 4]
 
     @property
-    def bboxes(self) -> BboxList:
-        return self._bboxes
-
-    @property
-    def class_ids(self) -> np.ndarray:
-        return self._raw_result[:, -2]
+    def class_ids(self) -> np.ndarray[float, np.dtype[np.float32]]:
+        return self._raw_result[:, 5]
 
     @property
     def class_labels(self) -> np.ndarray:
-        return self._raw_result[:, -1]
+        return self._raw_result[:, 6]
 
-    @property
-    def confs(self) -> np.ndarray:
-        return self._raw_result[:, 4]
+    def bboxes(self, dformat: BoxFormat) -> BboxList:
+        return BboxList(self.results[:, :4], dformat=dformat)
 
     def sort(self, ascending: bool = False):
         """Sort detections by confidence values."""
@@ -104,7 +89,7 @@ class ImageDetections:
         idx = np.where(self._raw_result[:, 4] >= conf_threshold)[0]
         return self._raw_result[idx]
 
-    def __getitem__(self, idx) -> Detection:
+    def __getitem__(self, idx: int) -> Detection:
         res = self._raw_result[idx]
 
         return Detection(label_name=res[-1], label_id=res[-2], conf=res[4], coord=res[:4])

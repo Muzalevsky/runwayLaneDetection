@@ -13,7 +13,7 @@ class BoxFormat(Enum):
 
 @dataclass
 class Bbox:
-    coords: Union[list[float], np.ndarray]
+    coords: Union[list[float], np.ndarray[float, np.dtype[np.float32]]]
     dformat: BoxFormat = BoxFormat.xywh
 
     def __post_init__(self):
