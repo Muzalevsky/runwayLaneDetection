@@ -231,8 +231,8 @@ class BboxList:
             return self.data
 
         data = self.data.copy()
-        if self._dformat != dformat:
-            data = self._convert_format(data, self._dformat, dformat)
+        if self.dformat != dformat:
+            data = self._convert_format(data, self.dformat, dformat)
         return data
 
     def as_numpy(self, dformat: BoxFormat):

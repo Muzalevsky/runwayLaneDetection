@@ -10,17 +10,14 @@ from .metrics import DetectionMetricCalculator
 from .types.detection_types import ImageDetections
 from .types.image_types import ImageRGB
 from .utils.convert import str_2_points
-from .utils.fs import read_image
+from .utils.fs import read_image, read_yolo_labels
 
 
 class DetectionEvaluator:
-    def __init__(
-        self, model: DetectionInference, dpath: str, batch_size: int = 8, verbose: bool = False
-    ):
+    def __init__(self, model: DetectionInference, batch_size: int = 8, verbose: bool = False):
         self._logger = logging.getLogger(self.__class__.__name__)
 
         self._model = model
-        self._dpath = Path(dpath)
         self._verbose = verbose
         self._batch_size = batch_size
 
@@ -39,36 +36,38 @@ class DetectionEvaluator:
         gt_dets = ImageDetections(gt_dets)
         return gt_dets
 
-    def _get_batch(self, batch_df: pd.DataFrame) -> tuple[list[ImageRGB], list[ImageDetections]]:
-        # TODO: check column name
-        batch_df = batch_df[["fpath", *self._model.names_map.values()]]
-
+    def _get_batch(
+        self, img_fpaths: list[Path], lbl_fpaths: list[Path]
+    ) -> tuple[list[ImageRGB], list[ImageDetections]]:
         b_images, b_gt_dets = [], []
-        for _row_ind, row in batch_df.iterrows():
-            # --- Image Preprocessing --- #
-            img_fpath = self._dpath / row["fpath"]
+        for img_fpath, lbl_fpath in zip(img_fpaths, lbl_fpaths):
             b_image = read_image(img_fpath)
             b_images.append(b_image)
 
-            # --- Labels Preprocessing --- #
-            gt_dets = self._get_batch_labels(row)
+            gt_np = read_yolo_labels(lbl_fpath)
+            # NOTE: label_id should be 6-th column
+            # gt_np = np.c_[gt_np[:, 1:], np.zeros((len(gt_np), 1)), gt_np[:, 0]]
+            gt_dets = ImageDetections.from_yolo_labels(gt_np, *b_image.shape[:2])
             b_gt_dets.append(gt_dets)
 
         return b_images, b_gt_dets
 
-    def evaluate(self, df: pd.DataFrame, conf: float = 0.001, iou: float = 0.3) -> pd.DataFrame:
-        # TODO: check column name
-        img_paths = df["fpath"].values
+    def evaluate(self, data_dpath: Path, conf: float = 0.001, iou: float = 0.3) -> pd.DataFrame:
+        img_fpaths = list((data_dpath / "images").glob("*.PNG"))
+        lbl_fpaths = list((data_dpath / "labels").glob("*.txt"))
 
         metric_calculator = DetectionMetricCalculator(self._model.names_map)
 
-        stream = range(0, img_paths.shape[0], self._batch_size)
+        stream = range(0, len(img_fpaths), self._batch_size)
         if self._verbose:
             stream = tqdm(stream, desc="Evaluation Processing")
 
         for ind in stream:
-            batch_df = df.iloc[ind : ind + self._batch_size]  # noqa: E203
-            b_images, b_gt_dets = self._get_batch(batch_df)
+            b_img_fpaths = img_fpaths[ind : ind + self._batch_size]  # noqa: E203
+            b_lbl_fpaths = lbl_fpaths[ind : ind + self._batch_size]  # noqa: E203
+
+            b_images, b_gt_dets = self._get_batch(b_img_fpaths, b_lbl_fpaths)
+
             preds = self._model.detect(b_images, conf=conf, iou=iou)
 
             # TODO: add data storage
@@ -79,5 +78,5 @@ class DetectionEvaluator:
 
         # --- Metric Computation --- #
         metrics_df = metric_calculator.compute_metrics()
-        metrics_df["Images"] = img_paths.shape[0]
+        metrics_df["Images"] = len(img_fpaths)
         return metrics_df.round(3)

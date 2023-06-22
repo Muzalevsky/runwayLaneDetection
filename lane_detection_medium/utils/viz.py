@@ -46,14 +46,14 @@ def render_bbox(
     color: tuple[int, int, int] = (0, 232, 201),
     line_thickness: int = 2,
     label: str = None,
-    font_color: tuple[int, int, int] = (0, 232, 201),
+    font_color: tuple[int, int, int] = (0, 0, 0),
     font_size: float = 0.8,
     font_width: float = 2,
     only_corners: bool = False,
     radius: int = 10,
     length: int = 40,
 ):
-    x, y, w, h = bbox.xywh_numpy.astype(int)
+    x, y, w, h = bbox.xywh.astype(int)
 
     if only_corners:
         draw_corners(

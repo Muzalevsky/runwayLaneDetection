@@ -7,14 +7,14 @@ import numpy as np
 from .box_types import Bbox, BboxList, BoxFormat
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Detection:
     """Single Detection Result Class Implementation."""
 
-    label_name: Optional[str] = None
     label_id: int
     conf: float
     bbox: np.ndarray[float, np.dtype[np.float32]]
+    label_name: Optional[str] = None
 
     def __post_init__(self):
         # TODO: choose dformat, maybe make it as a method?
@@ -33,14 +33,15 @@ class ImageDetections:
 
     @property
     def class_ids(self) -> np.ndarray[float, np.dtype[np.float32]]:
-        return self._raw_result[:, 5]
+        return self.results[:, 5]
 
     @property
     def class_labels(self) -> np.ndarray:
-        return self._raw_result[:, 6]
+        return self.results[:, 6]
 
-    def bboxes(self, dformat: BoxFormat) -> BboxList:
-        return BboxList(self.results[:, :4], dformat=dformat)
+    @property
+    def bboxes(self) -> BboxList:
+        return BboxList(self.results[:, :4], dformat=BoxFormat.xyxy)
 
     def sort(self, ascending: bool = False):
         """Sort detections by confidence values."""
@@ -49,7 +50,7 @@ class ImageDetections:
         if not ascending:
             conf_data = -(self._raw_result[:, 4])
 
-        self._raw_result = self._raw_result[conf_data.argsort()]
+        self.results = self.results[conf_data.argsort()]
 
     def get_index(self, cls_name: Union[str, int]) -> Optional[np.ndarray]:
         if isinstance(cls_name, str):
@@ -64,12 +65,12 @@ class ImageDetections:
             bbox_indexes = None
         return bbox_indexes
 
-    def delete(self, index: int | np.ndarray):
-        updated_result = np.delete(self._raw_result, index, axis=0)
+    def delete(self, index: Union[int, np.ndarray]):
+        updated_result = np.delete(self.results, index, axis=0)
         return ImageDetections(updated_result)
 
     def __len__(self):
-        return len(self._raw_result)
+        return len(self.results)
 
     @classmethod
     def from_yolo_labels(cls, data: np.ndarray, height: float, width: float):
@@ -83,13 +84,13 @@ class ImageDetections:
 
         # fill columns of label names with -1
         result = np.c_[bbox_np, result[:, -1], np.ones(result.shape[0]) * -1]
-        return cls(result, dformat=BoxFormat.xywh)
+        return cls(result)
 
     def filter_by_confidence(self, conf_threshold: float) -> np.ndarray:
         idx = np.where(self._raw_result[:, 4] >= conf_threshold)[0]
         return self._raw_result[idx]
 
     def __getitem__(self, idx: int) -> Detection:
-        res = self._raw_result[idx]
+        res = self.results[idx]
 
-        return Detection(label_name=res[-1], label_id=res[-2], conf=res[4], coord=res[:4])
+        return Detection(label_name=res[-1], label_id=res[-2], conf=res[4], bbox=res[:4])

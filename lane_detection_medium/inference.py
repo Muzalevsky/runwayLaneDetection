@@ -11,7 +11,7 @@ from .types.image_types import ImageRGB
 class DetectionInference:
     """Class Inference implementation for trained YOLOv5 model."""
 
-    model_name = YOLO_DPATH
+    model_name: str = str(YOLO_DPATH)
 
     def __init__(
         self,

@@ -4,9 +4,8 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import classification_report, confusion_matrix
 
-from ..types.detection_types import ImageDetections
-from .boxes import boxes_iou
-from .math import smooth
+from .types.detection_types import ImageDetections
+from .utils.geometry import boxes_iou, smooth
 
 
 def clf_report_df(true_data, pred_data) -> pd.DataFrame:

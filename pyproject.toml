@@ -36,7 +36,6 @@ pandas = "^2.0.2"
 opencv-python-headless = "^4.7.0.72"
 numpy = "^1.24.3"
 shapely = "^2.0.1"
-torch = "^2.0.1"
 scikit-learn = "^1.2.2"
 tqdm = "^4.65.0"
 imageio = "^2.31.0"
@@ -44,6 +43,10 @@ imageio-ffmpeg = "^0.4.8"
 typer = "^0.9.0"
 click = "^8.1.3"
 project-paths = "^1.1.1"
+matplotlib = "^3.7.1"
+torch = {version = ">=1.13,<2.0", platform = "linux"}
+torchvision = {version = ">=0.14,<1.0", platform = "linux"}
+seaborn = "^0.12.2"
 
 [tool.poetry.group.dev.dependencies]
 isort = {extras = ["colors"], version = "^5.10.1"}
