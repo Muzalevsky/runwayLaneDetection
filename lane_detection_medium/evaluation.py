@@ -41,20 +41,19 @@ class DetectionEvaluator:
     ) -> tuple[list[ImageRGB], list[ImageDetections]]:
         b_images, b_gt_dets = [], []
         for img_fpath, lbl_fpath in zip(img_fpaths, lbl_fpaths):
-            b_image = read_image(img_fpath)
+            b_image = read_image(str(img_fpath))
             b_images.append(b_image)
 
-            gt_np = read_yolo_labels(lbl_fpath)
-            # NOTE: label_id should be 6-th column
-            # gt_np = np.c_[gt_np[:, 1:], np.zeros((len(gt_np), 1)), gt_np[:, 0]]
+            gt_np = read_yolo_labels(str(lbl_fpath))
+            # NOTE: add synthetic conf column
             gt_dets = ImageDetections.from_yolo_labels(gt_np, *b_image.shape[:2])
             b_gt_dets.append(gt_dets)
 
         return b_images, b_gt_dets
 
     def evaluate(self, data_dpath: Path, conf: float = 0.001, iou: float = 0.3) -> pd.DataFrame:
-        img_fpaths = list((data_dpath / "images").glob("*.PNG"))
-        lbl_fpaths = list((data_dpath / "labels").glob("*.txt"))
+        img_fpaths = sorted((data_dpath / "images").glob("*.PNG"))
+        lbl_fpaths = sorted((data_dpath / "labels").glob("*.txt"))
 
         metric_calculator = DetectionMetricCalculator(self._model.names_map)
 
@@ -69,8 +68,6 @@ class DetectionEvaluator:
             b_images, b_gt_dets = self._get_batch(b_img_fpaths, b_lbl_fpaths)
 
             preds = self._model.detect(b_images, conf=conf, iou=iou)
-
-            # TODO: add data storage
 
             # --- Stats Collection for Metrics --- #
             for pred_dets, gt_dets in zip(preds, b_gt_dets):

@@ -1,3 +1,5 @@
+from typing import Optional
+
 import numpy as np
 
 from ..types.box_types import Bbox, BboxList, BoxFormat
@@ -9,13 +11,8 @@ def get_roi(bbox: Bbox, img: Image) -> Image:
     return img[y : y + h, x : x + w]  # noqa: E203
 
 
-def box_intersect(box_a: BboxList, box_b: BboxList):
+def box_intersect(box_a: BboxList, box_b: BboxList) -> Optional[np.ndarray]:
     """Intersection between boxes.
-
-    Parameters
-    ----------
-        box_a (ndarray[a,4]): Boxes list
-        box_b (ndarray[b,4]): Boxes list
 
     Return:
         (ndarray[a,b]): Matrix with intersection [pixels] between boxes
@@ -39,13 +36,8 @@ def box_intersect(box_a: BboxList, box_b: BboxList):
     return np.clip(max_xy - min_xy, 0, None).prod(2)  # inter
 
 
-def boxes_iou(box_a: BboxList, box_b: BboxList):
+def boxes_iou(box_a: BboxList, box_b: BboxList) -> Optional[np.ndarray]:
     """Compute IoU between boxes.
-
-    Parameters
-    ----------
-        box_a (ndarray[a,4]): Boxes list
-        box_b (ndarray[b,4]): Boxes list
 
     Returns
     -------
@@ -73,7 +65,7 @@ def boxes_iou(box_a: BboxList, box_b: BboxList):
     return out
 
 
-def smooth(y: np.ndarray, f=0.05) -> np.ndarray:
+def smooth(y: np.ndarray, f: float = 0.05) -> np.ndarray:
     # https://github.com/ultralytics/yolov5/blob/master/utils/metrics.py#L23
     # Box filter of fraction f
     nf = round(len(y) * f * 2) // 2 + 1  # number of filter elements (must be odd)

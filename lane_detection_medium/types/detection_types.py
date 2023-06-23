@@ -13,12 +13,13 @@ class Detection:
 
     label_id: int
     conf: float
-    bbox: np.ndarray[float, np.dtype[np.float32]]
+    bbox: Union[np.ndarray[float, np.dtype[np.float32]], Bbox]
     label_name: Optional[str] = None
 
     def __post_init__(self):
         # TODO: choose dformat, maybe make it as a method?
-        self.bbox = Bbox(self.bbox, dformat=BoxFormat.xyxy)
+        if not isinstance(self.bbox, Bbox):
+            self.bbox = Bbox(self.bbox, dformat=BoxFormat.xyxy)
 
 
 @dataclass
@@ -46,9 +47,9 @@ class ImageDetections:
     def sort(self, ascending: bool = False):
         """Sort detections by confidence values."""
 
-        conf_data = self._raw_result[:, 4]
+        conf_data = self.results[:, 4]
         if not ascending:
-            conf_data = -(self._raw_result[:, 4])
+            conf_data = -(self.results[:, 4])
 
         self.results = self.results[conf_data.argsort()]
 
@@ -60,7 +61,7 @@ class ImageDetections:
         else:
             raise ValueError(f"cls_name contains wrong value '{cls_name}'")
 
-        bbox_indexes = np.where(self._raw_result[:, index_pos] == cls_name)[0]
+        bbox_indexes = np.where(self.results[:, index_pos] == cls_name)[0]
         if not len(bbox_indexes):
             bbox_indexes = None
         return bbox_indexes
@@ -82,13 +83,19 @@ class ImageDetections:
         bbox_np[:, [0, 2]] *= width  # reverse normalize x
         bbox_np[:, :2] -= bbox_np[:, 2:] / 2  # xy top-left corner to center
 
+        bbox = BboxList(bbox_np, BoxFormat.xywh)
+
         # fill columns of label names with -1
-        result = np.c_[bbox_np, result[:, -1], np.ones(result.shape[0]) * -1]
+        # NOTE: add synthetic conf column
+        result = np.c_[
+            bbox.xyxy, np.zeros(len(result)), result[:, -1], np.ones(result.shape[0]) * -1
+        ]
+
         return cls(result)
 
     def filter_by_confidence(self, conf_threshold: float) -> np.ndarray:
-        idx = np.where(self._raw_result[:, 4] >= conf_threshold)[0]
-        return self._raw_result[idx]
+        idx = np.where(self.results[:, 4] >= conf_threshold)[0]
+        return self.results[idx]
 
     def __getitem__(self, idx: int) -> Detection:
         res = self.results[idx]

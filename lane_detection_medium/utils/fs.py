@@ -1,8 +1,5 @@
-from typing import Union
-
 import json
 from datetime import date
-from pathlib import Path
 
 import cv2
 import numpy as np
@@ -18,7 +15,7 @@ def get_date_string() -> str:
 # --- Image related --- #
 
 
-def read_image(fpath: Union[str, Path], gray_scale: bool = False) -> Image:
+def read_image(fpath: str, gray_scale: bool = False) -> Image:
     """Read image from filesystem."""
 
     if gray_scale:
