@@ -28,6 +28,8 @@ def read_image(fpath: str, gray_scale: bool = False) -> Image:
 
 
 def write_image(fpath: str, img: Image):
+    """Save image into filesystem."""
+
     if not is_gray(img):
         img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
 
