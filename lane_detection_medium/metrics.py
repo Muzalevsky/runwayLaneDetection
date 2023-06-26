@@ -202,6 +202,8 @@ class DetectionMetricCalculator:
                     pred_stats[matches[:, 1].astype(int), i] = True
 
         self._metric_labels |= set(gt_dets.class_ids)
+        self._metric_labels |= set(pred_dets.class_ids)
+
         self._stats.append((pred_stats, pred_dets.confs, pred_dets.class_ids, gt_dets.class_ids))
 
     def compute_metrics(self):
@@ -221,26 +223,18 @@ class DetectionMetricCalculator:
         if len(self._names) > 1:
             df_data = [["all", nt.sum(), mp, mr, f1.mean(), map50, map_]]
 
-        print(self._names)
-        print(self._metric_labels)
-        # print(p)
-        # print(r)
-        # print(f1)
-        # print(ap50)
-        # print(ap)
-
-        for idx, class_id in enumerate(list(self._metric_labels)):
-            class_name = self._names[class_id]
+        for class_idx, class_id in enumerate(self._metric_labels):
+            class_id = int(class_id)
 
             df_data.append(
                 [
-                    class_name,
-                    nt[idx],
-                    p[idx],
-                    r[idx],
-                    f1[idx],
-                    ap50[idx],
-                    ap[idx],
+                    self._names[class_id],
+                    nt[class_id],
+                    p[class_idx],
+                    r[class_idx],
+                    f1[class_idx],
+                    ap50[class_idx],
+                    ap[class_idx],
                 ]
             )
 
