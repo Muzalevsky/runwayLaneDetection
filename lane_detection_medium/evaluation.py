@@ -45,6 +45,8 @@ class DetectionEvaluator:
             b_images.append(b_image)
 
             gt_np = read_yolo_labels(str(lbl_fpath))
+            if not len(gt_np):
+                print(gt_np, lbl_fpath)
             # NOTE: add synthetic conf column
             gt_dets = ImageDetections.from_yolo_labels(gt_np, *b_image.shape[:2])
             b_gt_dets.append(gt_dets)
@@ -52,8 +54,9 @@ class DetectionEvaluator:
         return b_images, b_gt_dets
 
     def evaluate(self, data_dpath: Path, conf: float = 0.001, iou: float = 0.3) -> pd.DataFrame:
-        img_fpaths = sorted((data_dpath / "images").glob("*.PNG"))
         lbl_fpaths = sorted((data_dpath / "labels").glob("*.txt"))
+        # NOTE: select images with not empty labels
+        img_fpaths = [data_dpath / "images" / f"{fpath.stem}.PNG" for fpath in lbl_fpaths]
 
         metric_calculator = DetectionMetricCalculator(self._model.names_map)
 

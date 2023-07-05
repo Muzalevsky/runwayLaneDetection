@@ -1,5 +1,8 @@
+from typing import Union
+
 import json
 from datetime import date
+from pathlib import Path
 
 import cv2
 import numpy as np
@@ -9,7 +12,7 @@ from ..types.image_types import Image, is_gray
 
 
 def get_date_string() -> str:
-    return date.today().strftime("%Y-%m-%d")
+    return date.today().strftime("%Y_%m_%d")
 
 
 # --- Image related --- #
@@ -67,16 +70,21 @@ def save_json(fpath: str, data: dict):
 # --- TXT related --- #
 
 
-def read_txt(fpath: str) -> list[str]:
+def read_txt(fpath: Union[str, Path]) -> list[str]:
     with open(fpath) as fp:
         data = fp.readlines()
     return data
 
 
+def save_txt(fpath: Union[str, Path], data: list[str]):
+    with open(fpath, "w") as fp:
+        fp.writelines(data)
+
+
 # --- YOLO related --- #
 
 
-def read_yolo_labels(fpath: str) -> np.ndarray:
+def read_yolo_labels(fpath: Union[str, Path]) -> np.ndarray:
     txt_data = read_txt(fpath)
 
     np_data = []
@@ -89,6 +97,6 @@ def read_yolo_labels(fpath: str) -> np.ndarray:
     return np_data
 
 
-def write_yolo_labels(fpath: str, bboxes):
+def write_yolo_labels(fpath: Union[str, Path], bboxes):
     with open(fpath, "w") as file:
         file.write("\n".join([" ".join([str(v) for v in bbox]) for bbox in bboxes]))

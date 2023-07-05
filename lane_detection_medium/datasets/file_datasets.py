@@ -13,7 +13,7 @@ read_function = Callable[[str], pd.DataFrame]
 
 class DatasetMode(Enum):
     train = auto()
-    valid = auto()
+    val = auto()
     test = auto()
 
 
