@@ -28,9 +28,6 @@ def main(dataset_version: str):
     out_dpath.mkdir(parents=True, exist_ok=True)
 
     for mode in DatasetMode:
-        if mode.name != "test":
-            continue
-
         src_mode_dpath = src_dpath / mode.name
         out_mode_dpath = out_dpath / mode.name
 
