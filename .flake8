@@ -1,5 +1,9 @@
 [flake8]
-ignore = WPS305
+ignore =
+  ; Found f-string
+  WPS305,
+  ; zip without strict (from Python 3.10)
+  B905
 max-line-length = 100
 max-complexity = 18
 max-local-variables=10

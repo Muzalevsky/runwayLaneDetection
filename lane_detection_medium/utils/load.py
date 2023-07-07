@@ -1,8 +1,8 @@
-_LABEL_NAMES = ["solid_white", "break_white", "zebra"]
-_LABEL_IDS = [0, 1, 4]
+_LABEL_NAMES = ("solid_white", "break_white", "zebra")
+_LABEL_IDS = (0, 1, 4)
 
 
-def get_label_names() -> list[str]:
+def get_label_names() -> tuple[str]:
     return _LABEL_NAMES
 
 
