@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional, Union
 
 import cv2
 import numpy as np
@@ -18,7 +18,10 @@ def put_label(
 ):
     font = cv2.FONT_HERSHEY_COMPLEX
     text_wh, baseline = cv2.getTextSize(
-        text, fontFace=font, fontScale=font_size, thickness=font_width
+        text,
+        fontFace=font,
+        fontScale=font_size,
+        thickness=font_width,
     )
 
     height_margin = 4
@@ -45,7 +48,7 @@ def render_bbox(
     bbox: Bbox,
     color: tuple[int, int, int] = (0, 232, 201),
     line_thickness: int = 2,
-    label: str = None,
+    label: Optional[str] = None,
     font_color: tuple[int, int, int] = (0, 0, 0),
     font_size: float = 0.8,
     font_width: float = 2,
@@ -56,7 +59,7 @@ def render_bbox(
     x, y, w, h = bbox.xywh.astype(int)
 
     if only_corners:
-        draw_corners(
+        draw_corners(  # noqa: WPS317
             canvas,
             (x, y),
             (x + w, y + h),
@@ -120,7 +123,7 @@ def render_boxes(  # noqa: WPS211
     for i, box in enumerate(bboxes[:, :4]):
         x, y, w, h = box
         if only_corners:
-            draw_corners(
+            draw_corners(  # noqa: WPS317
                 canvas,
                 (x, y),
                 (x + w, y + h),
@@ -179,5 +182,4 @@ def draw_corners(
 
 
 def put_text(img, text, pos, color):
-    img = cv2.putText(img, text, pos, cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2, cv2.LINE_AA)
-    return img
+    return cv2.putText(img, text, pos, cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2, cv2.LINE_AA)

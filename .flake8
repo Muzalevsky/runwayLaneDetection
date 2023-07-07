@@ -4,9 +4,36 @@ ignore =
   WPS305,
   ; zip without strict (from Python 3.10)
   B905
+  ; Found too short name: x < 2
+  WPS111
+  ; Found local folder import
+  ;   Skip now as it`s main practise
+  WPS300,
+  ; Found wrong variable name: data
+  WPS110,
+  ; Found using `@staticmethod`
+  WPS602,
+  ; Found class without a base class
+  WPS306
+
+per-file-ignores =
+  lane_detection_medium/utils/viz.py:
+    ; Found magic number
+    ;   has a lot of default values
+    WPS432,
+    ; High Jones Complexity
+    ;   viz functions has lots of args
+    WPS221
+    ; Found too many arguments
+    WPS211
+    ; Found too many expressions
+    WPS213
+    ; Found overused expression
+    WPS204
 max-line-length = 100
 max-complexity = 18
 max-local-variables=10
+max-methods=25
 select = B,C,E,F,W,T4,B9
 
 strictness=long
