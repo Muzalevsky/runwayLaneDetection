@@ -31,6 +31,7 @@ def main(dataset_version: str):
         src_mode_dpath = src_dpath / mode.name
         out_mode_dpath = out_dpath / mode.name
 
+        # NOTE: copy all images from folder
         shutil.copytree(src_mode_dpath / "images", out_mode_dpath / "images", dirs_exist_ok=True)
 
         out_mode_labels_dpath = out_mode_dpath / "labels"
