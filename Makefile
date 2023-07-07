@@ -2,8 +2,6 @@
 SHELL := /usr/bin/env bash
 PYTHON ?= python3
 
-
-
 #* Installation
 .PHONY: project-init
 project-init: poetry-install tools-install
@@ -28,12 +26,6 @@ poetry-export-dev:
 tools-install:
 	poetry run pre-commit install --hook-type prepare-commit-msg --hook-type pre-commit
 	poetry run nbdime config-git --enable
-
-
-
-
-
-
 
 #* Cleaning
 .PHONY: pycache-remove
