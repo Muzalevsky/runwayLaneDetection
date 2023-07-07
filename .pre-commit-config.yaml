@@ -47,6 +47,7 @@ repos:
         name: flake8
         description: Python style guide enforcement
         entry: flake8
+        args: ["--config=setup.cfg"]
         language: python
         types: [python]
         additional_dependencies: [flake8-docstrings, flake8-print]
