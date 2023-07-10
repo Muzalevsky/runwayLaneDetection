@@ -38,3 +38,5 @@ select = B,C,E,F,W,T4,B9
 
 strictness=long
 docstring_style=numpy
+; Set double quats as the main one
+inline-quotes = "
