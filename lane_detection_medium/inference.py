@@ -72,7 +72,7 @@ class DetectionInference:
     @staticmethod
     def batch_generator(images: list[str], batch_size: int = 8):
         for index in range(0, len(images), batch_size):
-            b_images = images[index : index + batch_size]  # noqa: E203
+            b_images = images[index : index + batch_size]
             yield b_images
 
     def detect(
