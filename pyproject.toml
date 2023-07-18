@@ -54,6 +54,7 @@ envyaml = "^1.9.210927"
 ipykernel = "^6.23.1"
 wemake-python-styleguide = "^0.18.0"
 pre-commit = "^2.14.0"
+matplotx = "^0.3.10"
 
 [tool.black]
 # https://github.com/psf/black

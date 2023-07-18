@@ -75,7 +75,7 @@ def render_bbox(
         put_label(  # noqa: WPS317
             canvas,
             label,
-            (int(x), int(y - 5)),
+            (int(x), int(y + h - 5)),
             color=font_color,
             box_color=color,
             font_size=font_size,
