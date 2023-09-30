@@ -51,7 +51,7 @@ Awesome `lane-detection-medium` project!
 Here you can write anything about your project!
 
 And here is the result of the latest checkpoint:
-![DemoGIF](demo/test_archangel.gif)
+![Demo](demo/test_archangel.gif)
 
 Metrics:
 |             | Precision | Recall | mAP50 | mAP50-95 |
