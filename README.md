@@ -10,7 +10,7 @@
 [![pytorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)](https://ubuntu.com/)
 
-This project employs machine learning and computer viision techniques to automatically detect and analyze runway lanes at airports.
+This project employs machine learning and computer vision techniques to automatically detect and analyze runway lanes at airports.
 
 ![Demo](demo/test_archangel.gif)
 
@@ -31,7 +31,7 @@ This project employs machine learning and computer viision techniques to automat
   > Check if you need to ignore large reports or keep them in Git LFS
 - [configs](configs) - configuration files directory
 - [scripts](scripts) - repository service scripts
-  > These ones are not included into the pakckage if you build one - these scripts are only for usage with repository
+  > These ones are not included into the package if you build one - these scripts are only for usage with repository
 - [lane_detection_medium](lane_detection_medium) - source files of the project
 - [.editorconfig](.editorconfig) - configuration for [editorconfig](https://editorconfig.org/)
 - [.flake8](.flake8) - [flake8](https://github.com/pycqa/flake8) linter configuration
