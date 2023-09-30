@@ -10,25 +10,18 @@ import pandas as pd
 
 def dict_hash(cfg: dict) -> str:
     cfg_str = json.dumps(cfg)
-
-    hash_str = hashlib.sha224(cfg_str.encode("utf-8")).hexdigest()
-
-    return hash_str
+    return hashlib.sha224(cfg_str.encode("utf-8")).hexdigest()
 
 
 def file_hash(fpath: Union[str, Path]) -> str:
     if isinstance(fpath, str):
         fpath = Path(fpath)
 
-    hash_str = hashlib.sha224(fpath.read_bytes()).hexdigest()
-
-    return hash_str
+    return hashlib.sha224(fpath.read_bytes()).hexdigest()
 
 
 def dir_hash(dpath: str) -> str:
-    hash_str = checksumdir.dirhash(dpath)
-
-    return hash_str
+    return checksumdir.dirhash(dpath)
 
 
 def dataframe_hash(df: pd.DataFrame) -> str:

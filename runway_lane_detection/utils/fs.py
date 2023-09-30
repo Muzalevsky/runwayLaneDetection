@@ -25,9 +25,7 @@ def read_image(fpath: str, gray_scale: bool = False) -> Image:
         return cv2.imread(fpath, cv2.IMREAD_GRAYSCALE)
 
     img = cv2.imread(fpath, cv2.IMREAD_COLOR)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-    return img
+    return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
 
 def write_image(fpath: str, img: Image):
@@ -92,11 +90,13 @@ def read_yolo_labels(fpath: Union[str, Path]) -> np.ndarray:
         np_line = np.fromstring(line, dtype=np.float32, sep=" ")
         np_data.append(np_line)
 
-    np_data = np.array(np_data)
-
-    return np_data
+    return np.array(np_data)
 
 
 def write_yolo_labels(fpath: Union[str, Path], bboxes):
     with open(fpath, "w") as file:
-        file.write("\n".join([" ".join([str(v) for v in bbox]) for bbox in bboxes]))
+        file.write(
+            "\n".join(
+                [" ".join([str(v) for v in bbox]) for bbox in bboxes],  # noqa: WPS221
+            ),
+        )

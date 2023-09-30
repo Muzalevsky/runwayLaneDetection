@@ -61,8 +61,7 @@ def boxes_iou(box_a: BboxList, box_b: BboxList) -> Optional[np.ndarray]:
     area_b = np.expand_dims(area_b, 0)
 
     union = area_a + area_b - inter
-    out = inter / union
-    return out
+    return inter / union
 
 
 def smooth(y: np.ndarray, f: float = 0.05) -> np.ndarray:

@@ -41,28 +41,12 @@ repos:
         entry: flake8
         language: python
         types: [python]
-        exclude: lane_detection_medium/yolov5-7.0/
-
-      - id: black
-        name: black
-        entry: poetry run black --config pyproject.toml
-        types: [python]
-        language: system
-        # NOTE: exclude YOLOv5 sources
-        exclude: lane_detection_medium/yolov5-7.0
+        exclude: runway_lane_detection/yolov5-7.0/
 
   - repo: https://github.com/kynan/nbstripout
     rev: 0.5.0
     hooks:
       - id: nbstripout
-
-  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
-    rev: v1.3.1
-    hooks:
-      - id: python-safety-dependencies-check
-        files: pyproject.toml
-        # NOTE: exclude YOLOv5 sources
-        exclude: lane_detection_medium/yolov5-7.0
 
   - repo: https://github.com/humitos/mirrors-autoflake
     rev: v1.3

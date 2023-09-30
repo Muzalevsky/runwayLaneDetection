@@ -11,25 +11,28 @@ from .utils.geometry import boxes_iou, smooth
 def clf_report_df(true_data, pred_data) -> pd.DataFrame:
     clf_report = classification_report(true_data, pred_data, output_dict=True)
     df = pd.DataFrame(clf_report).round(3).T
-    df.loc[["accuracy"], ["precision", "recall", "support"]] = ""
+    df.loc[["accuracy"], ["precision", "recall", "support"]] = ""  # noqa: WPS359
     return df
 
 
 def clf_report_extend_specificity(
-    y_true: pd.Series, y_pred: pd.Series, report: pd.DataFrame, class_labels: list[str]
+    y_true: pd.Series,
+    y_pred: pd.Series,
+    report: pd.DataFrame,
+    class_labels: list[str],
 ) -> pd.DataFrame:
     support = report.loc[class_labels, "support"]
 
     cm = confusion_matrix(y_true, y_pred)
     tp = cm.diagonal()
     fp = np.sum(cm, axis=0) - tp
-    # fn = np.sum(cm, axis=1) - tp
+    # fn = np.sum(cm, axis=1) - tp  # noqa: E800
     tn = np.sum(tp) - tp
     specificity = np.round(tn / (tn + fp), decimals=3)
     specificity = pd.Series(specificity, index=class_labels, name="specificity")
 
     weights = support / np.sum(support)
-    # micro_specificity = np.sum(tn) / (np.sum(tn) + np.sum(fp))
+    # micro_specificity = np.sum(tn) / (np.sum(tn) + np.sum(fp))  # noqa: E800
     macro_specificity = np.round(np.mean(specificity), decimals=3)
     weighted_specificity = np.round(np.sum(specificity * weights), decimals=3)
 
@@ -40,11 +43,14 @@ def clf_report_extend_specificity(
     )
     specificity = specificity.append(other_cols)
 
-    report = pd.concat((specificity, report), axis=1)
-    return report
+    return pd.concat((specificity, report), axis=1)
 
 
-def compute_ap(recall: np.ndarray, precision: np.ndarray, method: str = "interp") -> float:
+def compute_ap(
+    recall: np.ndarray,
+    precision: np.ndarray,
+    method: str = "interp",
+) -> float:
     """Compute the average precision, given the recall and precision curves.
 
     Parameters
@@ -69,14 +75,14 @@ def compute_ap(recall: np.ndarray, precision: np.ndarray, method: str = "interp"
     """
 
     # Append sentinel values to beginning and end
-    mrec = np.concatenate(([0.0], recall, [1.0]))
-    mpre = np.concatenate(([1.0], precision, [0.0]))
+    mrec = np.concatenate(([0.0], recall, [1.0]))  # noqa: WPS358
+    mpre = np.concatenate(([1.0], precision, [0.0]))  # noqa: WPS358
 
     # Compute the precision envelope
     mpre = np.flip(np.maximum.accumulate(np.flip(mpre)))
 
     if method == "interp":
-        x = np.linspace(0, 1, 101)  # 101-point interp (COCO)
+        x = np.linspace(0, 1, 101)  # 101-point interp (COCO)  # noqa: WPS432
         ap = np.trapz(np.interp(x, mrec, mpre), x)  # integrate
     else:  # 'continuous'
         i = np.where(mrec[1:] != mrec[:-1])[0]  # points where x axis (recall) changes
@@ -86,7 +92,11 @@ def compute_ap(recall: np.ndarray, precision: np.ndarray, method: str = "interp"
 
 
 def _compute_ap_per_class(
-    tp: np.ndarray, conf: np.ndarray, pred_cls: np.ndarray, gt_cls: np.ndarray, eps: float = 1e-16
+    tp: np.ndarray,
+    conf: np.ndarray,
+    pred_cls: np.ndarray,
+    gt_cls: np.ndarray,
+    eps: float = 1e-16,
 ):
     """Compute the average precision per class.
 
@@ -123,7 +133,12 @@ def _compute_ap_per_class(
 
     px = np.linspace(0, 1, 1000)
     ap = np.zeros((unique_classes.shape[0], tp.shape[1]))
-    p, r = np.zeros((unique_classes.shape[0], 1000)), np.zeros((unique_classes.shape[0], 1000))
+    p, r = np.zeros((unique_classes.shape[0], 1000)), np.zeros(
+        (
+            unique_classes.shape[0],
+            1000,
+        ),
+    )
 
     for cls_idx, cls_id in enumerate(unique_classes):
         mask = pred_cls == cls_id
@@ -140,12 +155,22 @@ def _compute_ap_per_class(
 
         # Recall: TP / (TP + FN) -> TP / gt_label_n
         recall = tpc / (gt_label_n + eps)  # recall curve
-        r[cls_idx] = np.interp(-px, -conf.astype(np.float32)[mask], recall[:, 0], left=0)
+        r[cls_idx] = np.interp(
+            -px,
+            -conf.astype(np.float32)[mask],
+            recall[:, 0],
+            left=0,
+        )
 
         # Precision
         precision = tpc / (tpc + fpc)
         # p at pr_score
-        p[cls_idx] = np.interp(-px, -conf.astype(np.float32)[mask], precision[:, 0], left=1)
+        p[cls_idx] = np.interp(
+            -px,
+            -conf.astype(np.float32)[mask],
+            precision[:, 0],
+            left=1,
+        )
 
         # AP from recall-precision curve
         for j in range(tp.shape[1]):
@@ -168,9 +193,17 @@ class DetectionMetricCalculator:
         self._metric_labels = set()
 
         # NOTE: iou vector for mAP@0.5:0.95
-        self._iouv = np.linspace(0.5, 0.95, 10)
+        self._iouv = np.linspace(0.5, 0.95, 10)  # noqa: WPS432
 
-        self._columns = ["Class", "Instances", "Precision", "Recall", "F1", "mAP50", "mAP50-95"]
+        self._columns = [
+            "Class",
+            "Instances",
+            "Precision",
+            "Recall",
+            "F1",
+            "mAP50",
+            "mAP50-95",
+        ]
 
     def update(self, pred_dets: ImageDetections, gt_dets: ImageDetections):
         pred_stats = np.zeros(shape=(len(pred_dets), len(self._iouv)), dtype=np.bool_)
@@ -182,12 +215,13 @@ class DetectionMetricCalculator:
             #       output shape = [gt_dets.bboxes.shape[0], pred_dets.bboxes.shape[0]]
             correct_class_mask = gt_dets.class_ids.reshape(-1, 1) == pred_dets.class_ids
 
-            for i in range(len(self._iouv)):
+            for i in range(len(self._iouv)):  # noqa: WPS518
                 # IoU > threshold and classes match
-                x = np.where((iou_mat >= self._iouv[i]) & correct_class_mask)
+                x = np.where(
+                    (iou_mat >= self._iouv[i]) & correct_class_mask  # noqa" WPS465
+                )
 
                 if x[0].shape[0]:
-                    # [[row_ind, col_ind, iou_val]]
                     matches = np.column_stack((*x, iou_mat[x[0], x[1]]))
 
                     if x[0].shape[0] > 1:
@@ -195,8 +229,12 @@ class DetectionMetricCalculator:
                         matches = matches[matches[:, 2].argsort()[::-1]]
 
                         # choose best matches per class per particular IoU threshold
-                        matches = matches[np.unique(matches[:, 1], return_index=True)[1]]
-                        matches = matches[np.unique(matches[:, 0], return_index=True)[1]]
+                        matches = matches[
+                            np.unique(matches[:, 1], return_index=True)[1]
+                        ]
+                        matches = matches[
+                            np.unique(matches[:, 0], return_index=True)[1]
+                        ]
 
                     # mask pred detections as successful for specific iou threshold
                     pred_stats[matches[:, 1].astype(int), i] = True
@@ -204,7 +242,14 @@ class DetectionMetricCalculator:
         self._metric_labels |= set(gt_dets.class_ids)
         self._metric_labels |= set(pred_dets.class_ids)
 
-        self._stats.append((pred_stats, pred_dets.confs, pred_dets.class_ids, gt_dets.class_ids))
+        self._stats.append(
+            (
+                pred_stats,
+                pred_dets.confs,
+                pred_dets.class_ids,
+                gt_dets.class_ids,
+            ),
+        )
 
     def compute_metrics(self):
         # concat stats per field
@@ -235,8 +280,7 @@ class DetectionMetricCalculator:
                     f1[class_idx],
                     ap50[class_idx],
                     ap[class_idx],
-                ]
+                ],
             )
 
-        df = pd.DataFrame(df_data, columns=self._columns)
-        return df
+        return pd.DataFrame(df_data, columns=self._columns)

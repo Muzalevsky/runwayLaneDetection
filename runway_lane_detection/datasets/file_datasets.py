@@ -29,7 +29,7 @@ class FileDataset:
             raise ValueError("Dataset is not initialized - create it first!")
 
         if file_extension not in self.supported_extensions:
-            raise ValueError(f"'{file_extension}' is not supported.")
+            raise ValueError(f"{file_extension!r} is not supported.")
 
         self._dpath = dpath
         self._file_extension = file_extension

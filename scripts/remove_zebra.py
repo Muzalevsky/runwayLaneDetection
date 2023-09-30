@@ -5,9 +5,9 @@ import click
 from project_paths import paths
 from tqdm import tqdm
 
-from lane_detection_medium.datasets.file_datasets import DatasetMode
-from lane_detection_medium.utils.fs import get_date_string, read_txt, save_txt
-from lane_detection_medium.utils.load import get_zebra_id
+from runway_lane_detection.datasets.file_datasets import DatasetMode
+from runway_lane_detection.utils.fs import get_date_string, read_txt, save_txt
+from runway_lane_detection.utils.load import get_zebra_id
 
 logging.basicConfig(
     level=logging.INFO,

@@ -3,9 +3,9 @@ ignore =
   ; Found f-string
   WPS305,
   ; zip without strict (from Python 3.10)
-  B905
+  B905,
   ; Found too short name: x < 2
-  WPS111
+  WPS111,
   ; Found local folder import
   ;   Skip now as it`s main practise
   WPS300,
@@ -14,24 +14,49 @@ ignore =
   ; Found using `@staticmethod`
   WPS602,
   ; Found class without a base class
-  WPS306
+  WPS306,
   ; whitespace before ':'
-  E203
+  E203,
+  ; incorrect order of methods in a class
+  WPS338,
 
 per-file-ignores =
-  lane_detection_medium/utils/viz.py:
+  runway_lane_detection/utils/viz.py:
     ; Found magic number
-    ;   has a lot of default values
     WPS432,
     ; High Jones Complexity
-    ;   viz functions has lots of args
-    WPS221
+    WPS221,
     ; Found too many arguments
-    WPS211
+    WPS211,
     ; Found too many expressions
-    WPS213
+    WPS213,
     ; Found overused expression
-    WPS204
+    WPS204,
+  runway_lane_detection/utils/fs.py:
+    ; too many module members
+    WPS202,
+    ; string literal over-use
+    WPS226,
+  runway_lane_detection/evaluation.py:
+    ; too many local variables
+    WPS210,
+  runway_lane_detection/utils/geometry.py:
+    ; line with high Jones Complexoty
+    WPS221,
+  runway_lane_detection/types/image_types.py:
+    ; magic number
+    WPS432,
+    ; line with high Jones Complexoty
+    WPS221,
+  runway_lane_detection/metrics.py:
+    ; line with high Jones Complexoty
+    WPS221,
+    ; too many local variables
+    WPS210,
+    ; too deep nesting
+    WPS220,
+
+
 max-line-length = 100
 max-complexity = 18
 max-local-variables=10
