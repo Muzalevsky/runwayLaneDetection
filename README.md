@@ -49,3 +49,14 @@ Awesome `lane-detection-medium` project!
 ## Other interesting info
 
 Here you can write anything about your project!
+
+And here is the result of the latest checkpoint:
+![DemoGIF](demo/test_archangel.gif)
+
+Metrics:
+|             | Precision | Recall | mAP50 | mAP50-95 |
+|-------------|-----------|--------|-------|----------|
+| all         | 0.855     | 0.855  | 0.879 | 0.606    |
+| solid white | 0.959     | 0.843  | 0.93  | 0.7      |
+| break white | 0.751     | 0.867  | 0.828 | 0.512    |
+
